@@ -1,4 +1,4 @@
-package main
+package urls
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func normalizeURL(rawURL string) (string, error) {
+func Normalize(rawURL string) (string, error) {
 	urlData, err := url.Parse(strings.Trim(rawURL, "/"))
 	if err != nil {
 		return "", err

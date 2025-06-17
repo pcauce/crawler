@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/pcauce/crawler/internal/config"
 	"sort"
 )
 
@@ -10,11 +11,11 @@ type urlCount struct {
 	count int
 }
 
-func (cfg *config) printReport() {
-	fmt.Println(fmt.Sprintf("=============================\n  REPORT for %s://%s \n=============================", cfg.baseURL.Scheme, cfg.baseURL.Hostname()))
+func printReport(cfg *config.Config) {
+	fmt.Println(fmt.Sprintf("=============================\n  REPORT for %s://%s \n=============================", cfg.BaseURL.Scheme, cfg.BaseURL.Hostname()))
 
 	var sortedURLs []urlCount
-	for url, count := range cfg.pages {
+	for url, count := range cfg.Pages {
 		sortedURLs = append(sortedURLs, urlCount{url, count})
 	}
 

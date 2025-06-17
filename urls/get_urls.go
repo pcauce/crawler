@@ -1,4 +1,4 @@
-package main
+package urls
 
 import (
 	"golang.org/x/net/html"
@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func getURLsFromHTML(htmlBody string, baseURL *url.URL) ([]string, error) {
+func GetFromHTML(htmlBody string, baseURL *url.URL) ([]string, error) {
 	htmlReader := strings.NewReader(htmlBody)
 	docTree, err := html.Parse(htmlReader)
 	if err != nil {

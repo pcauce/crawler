@@ -1,17 +1,19 @@
-package main
+package pages
 
 import (
 	"fmt"
+	"github.com/pcauce/crawler/internal/config"
+	"github.com/pcauce/crawler/urls"
 	"net/url"
 )
 
-func (cfg *config) crawlPage(rawCurrentURL string) {
-	cfg.concurrencyControl <- struct{}{}
+func CrawlPage(cfg *config.Config, rawCurrentURL string) {
+	cfg.ConcurrencyControl <- struct{}{}
 	defer func() {
-		<-cfg.concurrencyControl
-		cfg.wg.Done()
+		<-cfg.ConcurrencyControl
+		cfg.Wg.Done()
 	}()
-	if cfg.isMaxPagesReached() {
+	if cfg.IsMaxPagesReached() {
 		return
 	}
 
@@ -23,37 +25,37 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		return
 	}
 
-	if currentURL.Hostname() != cfg.baseURL.Hostname() {
+	if currentURL.Hostname() != cfg.BaseURL.Hostname() {
 		return
 	}
 
-	normalizedURL, err := normalizeURL(rawCurrentURL)
+	normalizedURL, err := urls.Normalize(rawCurrentURL)
 	if err != nil {
 		fmt.Printf("Error - normalizedURL: %v", err)
 		return
 	}
 
-	isFirst := cfg.addPageVisit(normalizedURL)
+	isFirst := cfg.AddPageVisit(normalizedURL)
 	if !isFirst {
 		return
 	}
 
 	fmt.Printf("crawling %s\n", rawCurrentURL)
 
-	htmlBody, err := getHTML(rawCurrentURL)
+	htmlBody, err := GetHTML(rawCurrentURL)
 	if err != nil {
 		fmt.Printf("Error - getHTML: %v", err)
 		return
 	}
 
-	nextURLs, err := getURLsFromHTML(htmlBody, cfg.baseURL)
+	nextURLs, err := urls.GetFromHTML(htmlBody, cfg.BaseURL)
 	if err != nil {
 		fmt.Printf("Error - getURLsFromHTML: %v", err)
 		return
 	}
 
 	for _, nextURL := range nextURLs {
-		cfg.wg.Add(1)
-		go cfg.crawlPage(nextURL)
+		cfg.Wg.Add(1)
+		go CrawlPage(cfg, nextURL)
 	}
 }

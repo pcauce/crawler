@@ -1,4 +1,4 @@
-package main
+package urls
 
 import (
 	"net/url"
@@ -70,7 +70,7 @@ func TestGetURLsFromHTML(t *testing.T) {
 				return
 			}
 			tc.baseURL = baseURL.String()
-			actual, err := getURLsFromHTML(tc.HTMLBody, baseURL)
+			actual, err := GetFromHTML(tc.HTMLBody, baseURL)
 			switch tc.errIntended {
 			case true:
 
